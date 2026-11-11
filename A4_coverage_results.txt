@@ -1,0 +1,249 @@
+============================= test session starts ==============================
+platform linux -- Python 3.14.6, pytest-9.0.3, pluggy-1.6.0
+rootdir: /home/student/Desktop/SQE-Assignment-2
+plugins: cov-7.1.0, anyio-4.12.1
+collected 42 items
+
+tests/test_blackbox.py F.....F...F..F....F.......F.F.F.F.F.F..FF.        [100%]
+
+=================================== FAILURES ===================================
+_____________________ test_ecp_valid_credit_limit[ECP-01] ______________________
+
+current = 15, new = 3, expected = True
+
+    @pytest.mark.parametrize(
+        "current, new, expected",
+        [
+            pytest.param(15, 3, True, id="ECP-01"),
+        ],
+    )
+    def test_ecp_valid_credit_limit(current, new, expected):
+>       assert check_credit_limit(current, new) == expected
+E       assert False == True
+E        +  where False = check_credit_limit(15, 3)
+
+tests/test_blackbox.py:50: AssertionError
+__________________________ test_ecp_07_positive_dues ___________________________
+
+    def test_ecp_07_positive_dues():
+        student = make_student(outstanding_dues=1)
+        course = make_course()
+    
+>       assert registration_decision(student, course) == "DUES_BLOCK"
+E       AssertionError: assert 'REGISTERED' == 'DUES_BLOCK'
+E         
+E         - DUES_BLOCK
+E         + REGISTERED
+
+tests/test_blackbox.py:78: AssertionError
+_____________________ test_ecp_11_one_prerequisite_missing _____________________
+
+    def test_ecp_11_one_prerequisite_missing():
+>       assert prerequisites_satisfied(
+            {"CS101"},
+            {"CS101", "MATH101"}
+        ) is False
+E       AssertionError: assert True is False
+E        +  where True = prerequisites_satisfied({'CS101'}, {'CS101', 'MATH101'})
+
+tests/test_blackbox.py:101: AssertionError
+__________________________ test_ecp_14_course_is_full __________________________
+
+    def test_ecp_14_course_is_full():
+        student = make_student()
+        course = make_course(enrolled=30)
+    
+>       assert registration_decision(student, course) == "WAITLISTED"
+E       AssertionError: assert 'REGISTERED' == 'WAITLISTED'
+E         
+E         - WAITLISTED
+E         + REGISTERED
+
+tests/test_blackbox.py:125: AssertionError
+________________________ test_bva_credit_limit[BVA-04] _________________________
+
+current = 15, new = 3, expected = True
+
+    @pytest.mark.parametrize(
+        "current, new, expected",
+        [
+            pytest.param(0, 1, True, id="BVA-01"),
+            pytest.param(1, 2, True, id="BVA-02"),
+            pytest.param(14, 3, True, id="BVA-03"),
+            pytest.param(15, 3, True, id="BVA-04"),
+            pytest.param(16, 3, False, id="BVA-05"),
+            pytest.param(18, 1, False, id="BVA-06"),
+        ],
+    )
+    def test_bva_credit_limit(current, new, expected):
+>       assert check_credit_limit(current, new) == expected
+E       assert False == True
+E        +  where False = check_credit_limit(15, 3)
+
+tests/test_blackbox.py:151: AssertionError
+________________________ test_bva_dues_boundary[BVA-12] ________________________
+
+dues = 1, expected = 'DUES_BLOCK'
+
+    @pytest.mark.parametrize(
+        "dues, expected",
+        [
+            pytest.param(0, "REGISTERED", id="BVA-11"),
+            pytest.param(1, "DUES_BLOCK", id="BVA-12"),
+        ],
+    )
+    def test_bva_dues_boundary(dues, expected):
+        student = make_student(outstanding_dues=dues)
+        course = make_course()
+    
+>       assert registration_decision(student, course) == expected
+E       AssertionError: assert 'REGISTERED' == 'DUES_BLOCK'
+E         
+E         - DUES_BLOCK
+E         + REGISTERED
+
+tests/test_blackbox.py:179: AssertionError
+______________________ test_bva_capacity_boundary[BVA-14] ______________________
+
+enrolled = 30, expected = 'WAITLISTED'
+
+    @pytest.mark.parametrize(
+        "enrolled, expected",
+        [
+            pytest.param(29, "REGISTERED", id="BVA-13"),
+            pytest.param(30, "WAITLISTED", id="BVA-14"),
+            pytest.param(31, "ValueError", id="BVA-15"),
+        ],
+    )
+    def test_bva_capacity_boundary(enrolled, expected):
+        student = make_student()
+        course = make_course(enrolled=enrolled)
+    
+        if expected == "ValueError":
+            with pytest.raises(ValueError):
+                registration_decision(student, course)
+        else:
+>           assert registration_decision(student, course) == expected
+E           AssertionError: assert 'REGISTERED' == 'WAITLISTED'
+E             
+E             - WAITLISTED
+E             + REGISTERED
+
+tests/test_blackbox.py:198: AssertionError
+____________________________ test_dt_01_dues_block _____________________________
+
+    def test_dt_01_dues_block():
+        student = make_student(outstanding_dues=1)
+        course = make_course()
+    
+>       assert registration_decision(student, course) == "DUES_BLOCK"
+E       AssertionError: assert 'REGISTERED' == 'DUES_BLOCK'
+E         
+E         - DUES_BLOCK
+E         + REGISTERED
+
+tests/test_blackbox.py:207: AssertionError
+_______________________ test_dt_03_prerequisites_missing _______________________
+
+    def test_dt_03_prerequisites_missing():
+        student = make_student(completed_courses={"CS101"})
+        course = make_course(prerequisites={"CS101", "MATH101"})
+    
+>       assert registration_decision(student, course) == "PREREQUISITES_MISSING"
+E       AssertionError: assert 'REGISTERED' == 'PREREQUISITES_MISSING'
+E         
+E         - PREREQUISITES_MISSING
+E         + REGISTERED
+
+tests/test_blackbox.py:221: AssertionError
+____________________________ test_dt_05_course_full ____________________________
+
+    def test_dt_05_course_full():
+        student = make_student()
+        course = make_course(enrolled=30)
+    
+>       assert registration_decision(student, course) == "WAITLISTED"
+E       AssertionError: assert 'REGISTERED' == 'WAITLISTED'
+E         
+E         - WAITLISTED
+E         + REGISTERED
+
+tests/test_blackbox.py:235: AssertionError
+___________________ test_dt_07_dues_priority_over_duplicate ____________________
+
+    def test_dt_07_dues_priority_over_duplicate():
+        student = make_student(
+            outstanding_dues=1,
+            registered_courses={"CS201"}
+        )
+        course = make_course()
+    
+>       assert registration_decision(student, course) == "DUES_BLOCK"
+E       AssertionError: assert 'ALREADY_REGISTERED' == 'DUES_BLOCK'
+E         
+E         - DUES_BLOCK
+E         + ALREADY_REGISTERED
+
+tests/test_blackbox.py:252: AssertionError
+________________ test_failed_registration_does_not_change_state ________________
+
+    def test_failed_registration_does_not_change_state():
+        student = make_student(outstanding_dues=1)
+        course = make_course()
+    
+        original_credits = student.current_credits
+        original_courses = student.registered_courses.copy()
+        original_enrolled = course.enrolled
+        original_waitlist = course.waitlist.copy()
+    
+        result = register_course(student, course)
+    
+>       assert result == "DUES_BLOCK"
+E       AssertionError: assert 'REGISTERED' == 'DUES_BLOCK'
+E         
+E         - DUES_BLOCK
+E         + REGISTERED
+
+tests/test_blackbox.py:303: AssertionError
+_______________ test_withdrawal_updates_student_and_course_state _______________
+
+    def test_withdrawal_updates_student_and_course_state():
+        student = make_student(
+            current_credits=3,
+            registered_courses={"CS201"}
+        )
+        course = make_course(enrolled=1)
+    
+        result = withdraw_course(student, course)
+    
+        assert result is True
+        assert "CS201" not in student.registered_courses
+        assert student.current_credits == 0
+>       assert course.enrolled == 0
+E       AssertionError: assert 1 == 0
+E        +  where 1 = Course(code='CS201', credit_hours=3, capacity=30, enrolled=1, prerequisites=set(), waitlist=[]).enrolled
+
+tests/test_blackbox.py:322: AssertionError
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.14.6-final-0 ________________
+
+Name              Stmts   Miss Branch BrPart  Cover   Missing
+-------------------------------------------------------------
+registration.py      53      5     26      4    86%   51, 55, 59, 70-71
+-------------------------------------------------------------
+TOTAL                53      5     26      4    86%
+=========================== short test summary info ============================
+FAILED tests/test_blackbox.py::test_ecp_valid_credit_limit[ECP-01] - assert F...
+FAILED tests/test_blackbox.py::test_ecp_07_positive_dues - AssertionError: as...
+FAILED tests/test_blackbox.py::test_ecp_11_one_prerequisite_missing - Asserti...
+FAILED tests/test_blackbox.py::test_ecp_14_course_is_full - AssertionError: a...
+FAILED tests/test_blackbox.py::test_bva_credit_limit[BVA-04] - assert False =...
+FAILED tests/test_blackbox.py::test_bva_dues_boundary[BVA-12] - AssertionErro...
+FAILED tests/test_blackbox.py::test_bva_capacity_boundary[BVA-14] - Assertion...
+FAILED tests/test_blackbox.py::test_dt_01_dues_block - AssertionError: assert...
+FAILED tests/test_blackbox.py::test_dt_03_prerequisites_missing - AssertionEr...
+FAILED tests/test_blackbox.py::test_dt_05_course_full - AssertionError: asser...
+FAILED tests/test_blackbox.py::test_dt_07_dues_priority_over_duplicate - Asse...
+FAILED tests/test_blackbox.py::test_failed_registration_does_not_change_state
+FAILED tests/test_blackbox.py::test_withdrawal_updates_student_and_course_state
+======================== 13 failed, 29 passed in 0.15s =========================
