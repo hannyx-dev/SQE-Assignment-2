@@ -104,7 +104,7 @@ def test_wb_p6_credit_limit():
 
 def test_wb_p7_waitlisted():
     student = create_student()
-    course = create_course(capacity=1, enrolled=2)
+    course = create_course(capacity=1, enrolled=1)
 
     result = registration_decision(student, course)
 
@@ -265,6 +265,7 @@ def test_wb_withdraw_registered():
     assert "CS101" not in student.registered_courses
     assert student.current_credits == 0
     assert course.enrolled == 4
+
 
 def test_wb_positive_dues_block():
     student = create_student(outstanding_dues=1)
