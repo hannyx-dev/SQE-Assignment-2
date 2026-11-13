@@ -94,7 +94,7 @@ def test_wb_p5_missing_prerequisites():
 
 
 def test_wb_p6_credit_limit():
-    student = create_student(current_credits=15)
+    student = create_student(current_credits=16)
     course = create_course(credit_hours=3)
 
     result = registration_decision(student, course)
